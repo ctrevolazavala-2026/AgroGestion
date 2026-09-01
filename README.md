@@ -15,7 +15,7 @@ Abrir `http://localhost:3000` en el navegador.
 ## Stack
 
 - **Next.js 16 + TypeScript + Tailwind** — app web mobile-first.
-- **SQLite + Drizzle ORM** (`db/schema.ts`, `db/index.ts`) — sin servidor de base de datos aparte.
+- **SQLite + Drizzle ORM** (`db/schema.ts`, `db/index.ts`) — local en desarrollo (archivo `agrogestion.db`), o [Turso](https://turso.tech) en producción (mismo motor SQLite alojado en la nube) vía las variables `TURSO_DATABASE_URL` / `TURSO_AUTH_TOKEN`.
 - **Recharts** — el gráfico de torta del dashboard.
 - **Server Actions de Next.js** (`app/actions.ts`) — todas las altas y consultas, con la regla de imputación completa (establecimiento + lote + campaña + cultivo) validada en el servidor.
 
@@ -52,4 +52,7 @@ Cuando esta etapa esté probada con datos reales del campo, seguir con la **Etap
 
 ## Deploy
 
-Cuando quieras que el productor la use de verdad: `vercel` (o pedirle a Claude Code "hacé el deploy a Vercel"). Nota: Vercel no tiene disco persistente, así que para producción real conviene migrar de SQLite local a una base alojada (ej. Turso, que es SQLite-compatible) antes de ese paso — no hace falta resolverlo todavía mientras se prueba en local.
+1. Crear una base gratuita en [Turso](https://turso.tech) y copiar la **Database URL** y un **Auth Token**.
+2. Importar este repositorio en [Vercel](https://vercel.com) ("Add New Project" → elegir `AgroGestion`).
+3. En las variables de entorno del proyecto en Vercel, cargar `TURSO_DATABASE_URL` y `TURSO_AUTH_TOKEN`.
+4. Deploy. El build corre `drizzle-kit migrate` automáticamente antes de compilar, así que las tablas se crean solas en la base de Turso la primera vez.
